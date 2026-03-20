@@ -108,10 +108,32 @@ def apply_border_range(ws, row1, col1, row2, col2, border):
 # PIL で説明用画像を生成する（外部ファイル不要）
 # ---------------------------------------------------------------------------
 
+# Windows の日本語フォントを優先順位で探す
+_FONT_CANDIDATES = [
+    "C:/Windows/Fonts/meiryo.ttc",
+    "C:/Windows/Fonts/YuGothR.ttc",
+    "C:/Windows/Fonts/msgothic.ttc",
+    "C:/Windows/Fonts/BIZ-UDGothicR.ttc",
+    "C:/Windows/Fonts/NotoSansJP-VF.ttf",
+]
+
+def _get_font(size: int) -> ImageFont.FreeTypeFont:
+    """利用可能な日本語フォントを返す。見つからない場合はデフォルト。"""
+    for path in _FONT_CANDIDATES:
+        try:
+            return ImageFont.truetype(path, size)
+        except (IOError, OSError):
+            continue
+    return ImageFont.load_default()
+
+
 def create_dummy_image(width=300, height=150, text="工事概要図") -> io.BytesIO:
     """方眼紙Excelに貼り付けるダミー画像を生成する"""
     img = Image.new("RGB", (width, height), color=(230, 240, 255))
     draw = ImageDraw.Draw(img)
+
+    font_title = _get_font(14)
+    font_small = _get_font(11)
 
     # 格子線
     for x in range(0, width, 30):
@@ -125,9 +147,9 @@ def create_dummy_image(width=300, height=150, text="工事概要図") -> io.Byte
     draw.polygon([(60, 50), (100, 20), (140, 50)], outline=(50, 80, 150), fill=(170, 190, 220))
     draw.polygon([(160, 70), (200, 45), (240, 70)], outline=(50, 80, 150), fill=(170, 190, 220))
 
-    # テキスト
-    draw.text((10, 5), text, fill=(30, 50, 120))
-    draw.text((10, 130), "スケール 1:200", fill=(80, 80, 80))
+    # テキスト（日本語フォント指定）
+    draw.text((10, 5), text, fill=(30, 50, 120), font=font_title)
+    draw.text((10, 128), "スケール 1:200", fill=(80, 80, 80), font=font_small)
 
     buf = io.BytesIO()
     img.save(buf, format="PNG")
@@ -139,11 +161,17 @@ def create_company_logo(width=200, height=60) -> io.BytesIO:
     """簡易ロゴ画像を生成する"""
     img = Image.new("RGB", (width, height), color=(255, 255, 255))
     draw = ImageDraw.Draw(img)
+
+    font_ja   = _get_font(12)
+    font_ja_b = _get_font(13)
+    font_en   = _get_font(9)
+
     draw.rectangle([5, 5, 195, 55], outline=(30, 60, 150), width=2)
     draw.rectangle([5, 5, 70, 55], fill=(30, 60, 150))
-    draw.text((15, 20), "株式会社", fill=(255, 255, 255))
-    draw.text((80, 10), "サンプル建設", fill=(30, 60, 150))
-    draw.text((80, 35), "SAMPLE KENSETSU Co.,Ltd.", fill=(100, 100, 100))
+    draw.text((10, 18), "株式会社", fill=(255, 255, 255), font=font_ja)
+    draw.text((75, 8),  "サンプル建設", fill=(30, 60, 150), font=font_ja_b)
+    draw.text((75, 36), "SAMPLE KENSETSU Co.,Ltd.", fill=(100, 100, 100), font=font_en)
+
     buf = io.BytesIO()
     img.save(buf, format="PNG")
     buf.seek(0)
