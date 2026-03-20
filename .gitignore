@@ -8,4 +8,5 @@ dist/
 build/
 .DS_Store
 Thumbs.db
-output/
+# output/ はGit管理する（変換結果を記録）
+# output/
