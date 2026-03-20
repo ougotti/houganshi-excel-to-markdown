@@ -3,6 +3,8 @@ annotated-doc==0.0.4
 annotated-types==0.7.0
 antlr4-python3-runtime==4.9.3
 attrs==26.1.0
+azure-ai-inference==1.0.0b9
+azure-core==1.39.0
 beautifulsoup4==4.14.3
 certifi==2026.2.25
 charset-normalizer==3.4.6
@@ -23,6 +25,7 @@ flatbuffers==25.12.19
 fsspec==2026.2.0
 huggingface_hub==0.36.2
 idna==3.11
+isodate==0.7.2
 Jinja2==3.1.6
 jsonlines==4.0.0
 jsonref==1.1.0
