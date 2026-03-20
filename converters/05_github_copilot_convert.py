@@ -33,7 +33,7 @@ from PIL import Image, ImageDraw, ImageFont
 INPUT_FILE = Path("test_data/houganshi_sample.xlsx")
 OUTPUT_DIR = Path("output/05_github_copilot")
 
-ENDPOINT   = "https://models.inference.ai.azure.com"
+ENDPOINT   = "https://models.github.ai/inference"
 TEXT_MODEL = "openai/gpt-4o-mini"
 VISION_MODEL = "openai/gpt-4o"
 
